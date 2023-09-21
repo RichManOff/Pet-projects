@@ -1,4 +1,4 @@
-package com.example.provence.paymentsystem2.model;
+package com.example.provence.model;
 
 public class JavaMailSenderImpl {
 //    @Bean
