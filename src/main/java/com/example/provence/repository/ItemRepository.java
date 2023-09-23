@@ -10,4 +10,6 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findByNameContainingIgnoreCase(String name);
     // You can define custom query methods here if needed
+    Item findItemByNameContainingIgnoreCase(String name);
+
 }
