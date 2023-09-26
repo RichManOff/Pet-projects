@@ -34,7 +34,7 @@ public class DatabaseConfig {
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
 
         // List of SQL script file names
-        List<String> scriptFiles = Arrays.asList("category.sql", "item.sql");
+        List<String> scriptFiles = Arrays.asList("category.sql", "data.sql");
 
         for (String script : scriptFiles) {
             populator.addScript(new ClassPathResource(script));
