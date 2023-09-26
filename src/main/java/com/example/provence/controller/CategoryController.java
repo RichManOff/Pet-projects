@@ -39,7 +39,7 @@ public class CategoryController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteItem(@RequestBody Long id) {
+    public ResponseEntity<String> deleteItem(@RequestParam("id") Long id) {
         categoryService.deleteMenuCategory(id);
         return ResponseEntity.badRequest().body("Category deleted successfully.");
     }

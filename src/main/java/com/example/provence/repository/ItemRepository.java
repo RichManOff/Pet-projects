@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
+    List<Item> findAllByCategory_Id(Long id);
     List<Item> findByNameContainingIgnoreCase(String name);
     // You can define custom query methods here if needed
     Item findItemByNameContainingIgnoreCase(String name);

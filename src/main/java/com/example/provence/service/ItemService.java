@@ -3,6 +3,7 @@ package com.example.provence.service;
 import com.example.provence.model.Item;
 import com.example.provence.model.Order;
 import com.example.provence.repository.ItemRepository;
+import com.example.provence.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,11 @@ import java.util.Optional;
 public class ItemService {
 
     public final ItemRepository itemRepository;
+    public final OrderRepository orderRepository;
 
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository, OrderRepository orderRepository) {
         this.itemRepository = itemRepository;
+        this.orderRepository = orderRepository;
     }
 
     public List<Item> getAllItems() {
@@ -38,10 +41,20 @@ public class ItemService {
 
     public void deleteMenuItem(Long id) {
         Optional<Item> itemOptional = itemRepository.findById(id);
+        List<Order> orders = orderRepository.findByItemsId(id);
+        log.info("service");
         if (itemOptional.isPresent()) {
-            itemRepository.delete(itemOptional.get());
+            orderRepository.deleteAll(orders);
+            itemRepository.deleteById(id);
         } else {
             throw new IllegalStateException("Order not found with ID: " + id);
+        }
+    }
+
+    public void findAllByCategory_IdAndDelete(Long id){
+        List<Item> items = itemRepository.findAllByCategory_Id(id);
+        for (Item item : items) {
+            deleteMenuItem(item.getId());
         }
     }
 }

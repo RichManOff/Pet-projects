@@ -12,9 +12,10 @@ import java.util.Optional;
 @Service
 public class CategoryService {
     public final CategoryRepository categoryRepository;
-
-    public CategoryService(CategoryRepository categoryRepository) {
+    public final ItemService itemService;
+    public CategoryService(CategoryRepository categoryRepository, ItemService itemService) {
         this.categoryRepository = categoryRepository;
+        this.itemService = itemService;
     }
 
     public List<Category> getAllCategories() {
@@ -38,6 +39,7 @@ public class CategoryService {
     public void deleteMenuCategory(Long id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isPresent()) {
+            itemService.findAllByCategory_IdAndDelete(id);
             categoryRepository.delete(categoryOptional.get());
         } else {
             throw new IllegalStateException("Order not found with ID: " + id);

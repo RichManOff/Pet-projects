@@ -47,9 +47,10 @@ public class ItemController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteItem(@RequestBody Long id) {
+    public ResponseEntity<String> deleteItem(@RequestParam("id") Long id) {
+        log.info("controller");
         itemService.deleteMenuItem(id);
-        return ResponseEntity.badRequest().body("Item deleted successfully.");
+        return ResponseEntity.ok("Item deleted successfully.");
     }
 
 }
