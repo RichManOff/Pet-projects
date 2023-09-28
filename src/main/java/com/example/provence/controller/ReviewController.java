@@ -29,7 +29,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("/add")
+    @PostMapping("/add")
     public ResponseEntity<Review> addReviews(@RequestBody Review review) {
         reviewRepository.save(review);
         return ResponseEntity.ok(review);
