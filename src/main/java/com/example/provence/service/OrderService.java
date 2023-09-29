@@ -136,8 +136,8 @@ public class OrderService {
     }
 
     public String beautifyVacancy(Vacancy vacancy) {
-        return "Имя: " + vacancy.getName()
-                + "<br/>Телефон номер: " + vacancy.getPhone()
-                + "<br/>О себе(резюме): " + vacancy.getResume();
+        return "<h3>Имя: </h3>" + vacancy.getName()
+                + "<br/><h3>Телефон номер: </h3>" + vacancy.getPhone()
+                + "<br/><h3>О себе(резюме): </h3>" + vacancy.getResume();
     }
 }
