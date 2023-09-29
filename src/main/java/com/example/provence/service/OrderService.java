@@ -3,6 +3,7 @@ package com.example.provence.service;
 import com.example.provence.model.Item;
 import com.example.provence.model.Order;
 import com.example.provence.model.OrderStatus;
+import com.example.provence.model.Vacancy;
 import com.example.provence.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -132,5 +133,11 @@ public class OrderService {
         helper.setText(text, true);
 
         javaMailSender.send(message);
+    }
+
+    public String beautifyVacancy(Vacancy vacancy) {
+        return "Имя: " + vacancy.getName()
+                + "<br/>Телефон номер: " + vacancy.getPhone()
+                + "<br/>О себе(резюме): " + vacancy.getResume();
     }
 }

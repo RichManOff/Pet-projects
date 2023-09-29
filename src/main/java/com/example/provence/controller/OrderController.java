@@ -1,6 +1,7 @@
 package com.example.provence.controller;
 
 import com.example.provence.model.Order;
+import com.example.provence.model.Vacancy;
 import com.example.provence.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,13 @@ public class OrderController {
         String content = orderService.beautifyMessage(order);
         orderService.sendEmail("Заказы с сайта Provence", content);
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/send_vacancy")
+    public ResponseEntity<Vacancy> sendVacancy(@RequestBody Vacancy vacancy) throws MessagingException {
+        String content = orderService.beautifyVacancy(vacancy);
+        orderService.sendEmail("Вакансии с сайта Provence", content);
+        return new ResponseEntity<>(vacancy, HttpStatus.CREATED);
     }
 
     @PostMapping("/delete")
