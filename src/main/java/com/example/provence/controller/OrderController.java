@@ -5,6 +5,7 @@ import com.example.provence.model.Vacancy;
 import com.example.provence.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RestController
 @RequestMapping("/provence/orders")
 public class OrderController {
     private final OrderService orderService;
-
+    @Value("${spring.mail.username}")
+    private String fromEmail ;
     @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
@@ -40,14 +43,14 @@ public class OrderController {
     public ResponseEntity<Order> createOrder(@RequestBody Order order) throws MessagingException {
         Order createdOrder = orderService.createOrder(order);
         String content = orderService.beautifyMessage(order);
-        orderService.sendEmail("Заказы с сайта Provence", content);
+        orderService.sendEmail("Заказы с сайта Provence", content, fromEmail);
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 
     @PostMapping("/send_vacancy")
     public ResponseEntity<Vacancy> sendVacancy(@RequestBody Vacancy vacancy) throws MessagingException {
         String content = orderService.beautifyVacancy(vacancy);
-        orderService.sendEmail("Вакансии с сайта Provence", content);
+        orderService.sendEmail("Вакансии с сайта Provence", content, fromEmail);
         return new ResponseEntity<>(vacancy, HttpStatus.CREATED);
     }
 
@@ -60,4 +63,25 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    private AtomicInteger code = new AtomicInteger(0);
+
+    @PostMapping("/verificate")
+    public ResponseEntity<Integer> verificateEmail(@RequestBody String email) throws MessagingException {
+        int generatedCode = orderService.generateCode();
+//        email = email.trim();
+        code.set(generatedCode);
+        log.info(fromEmail);
+        orderService.sendEmail("Код подтверждение с сайта Provence", String.valueOf(generatedCode), email);
+        return new ResponseEntity<>(generatedCode, HttpStatus.OK);
+    }
+
+    @PostMapping("/code")
+    public ResponseEntity<Boolean> checkCode(@RequestBody int codeCheck) {
+        if(codeCheck != code.get()){
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
 }

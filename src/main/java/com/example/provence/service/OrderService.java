@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -122,10 +123,9 @@ public class OrderService {
     }
     private final JavaMailSender javaMailSender;
 
-    @Value("${spring.mail.username}")
-    private String fromEmail ;
+
 //= "ice_akpekova@mail.ru"
-    public void sendEmail(String subject, String text) throws MessagingException {
+    public void sendEmail(String subject, String text, String fromEmail) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(fromEmail);
@@ -139,5 +139,16 @@ public class OrderService {
         return "<h3>Имя: </h3>" + vacancy.getName()
                 + "<br/><h3>Телефон номер: </h3>" + vacancy.getPhone()
                 + "<br/><h3>О себе(резюме): </h3>" + vacancy.getResume();
+    }
+
+    public int generateCode(){
+        int min = 10000;
+        int max = 99999;
+        Random random = new Random();
+
+        int verificationCode = random.nextInt((max - min) + 1) + min;
+
+        System.out.println("Generated Verification Code: " + verificationCode);
+        return verificationCode;
     }
 }
