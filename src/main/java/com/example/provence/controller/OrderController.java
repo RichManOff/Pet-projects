@@ -1,5 +1,6 @@
 package com.example.provence.controller;
 
+import com.example.provence.model.Category;
 import com.example.provence.model.Order;
 import com.example.provence.model.Vacancy;
 import com.example.provence.service.OrderService;
@@ -67,12 +68,14 @@ public class OrderController {
     private AtomicInteger code = new AtomicInteger(0);
 
     @PostMapping("/verificate")
-    public ResponseEntity<Integer> verificateEmail(@RequestBody String email) throws MessagingException {
+    public ResponseEntity<Integer> verificateEmail(@RequestBody Category email) {
         int generatedCode = orderService.generateCode();
-//        email = email.trim();
         code.set(generatedCode);
-        log.info(fromEmail);
-        orderService.sendEmail("Код подтверждение с сайта Provence", String.valueOf(generatedCode), email);
+        try {
+            orderService.sendEmail("Код подтверждение с сайта Provence", String.valueOf(generatedCode), email.getName());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
         return new ResponseEntity<>(generatedCode, HttpStatus.OK);
     }
 
