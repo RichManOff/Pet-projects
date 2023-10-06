@@ -1,5 +1,6 @@
 package com.example.provence.controller;
 
+import com.example.provence.model.Item;
 import com.example.provence.model.Review;
 import com.example.provence.model.StopItem;
 import com.example.provence.repository.ReviewRepository;
@@ -8,10 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -33,5 +33,11 @@ public class StopItemController {
     public ResponseEntity<StopItem> addReviews(@RequestBody StopItem stopItem) {
         stopItemRepository.save(stopItem);
         return ResponseEntity.ok(stopItem);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<StopItem>> getAllMenuItems() {
+        List<StopItem> items = stopItemRepository.findAll();
+        return ResponseEntity.ok(items);
     }
 }
