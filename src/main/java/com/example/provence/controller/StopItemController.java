@@ -40,4 +40,10 @@ public class StopItemController {
         List<StopItem> items = stopItemRepository.findAll();
         return ResponseEntity.ok(items);
     }
+
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteItem(@RequestParam("id") Long id) {
+        stopItemRepository.deleteById(id);
+        return ResponseEntity.ok("Item deleted successfully.");
+    }
 }
