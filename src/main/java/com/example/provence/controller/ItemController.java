@@ -5,6 +5,7 @@ import com.example.provence.service.CategoryService;
 import com.example.provence.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,5 +67,13 @@ public class ItemController {
         item.setStopMenu(false);
         itemService.createMenuItem(item);
         return ResponseEntity.ok("Item deleted successfully.");
+    }
+
+    @PostMapping("/bool")
+    public ResponseEntity<Boolean> checkItem(@RequestParam("id") Long id) {
+        if(itemService.getItemById(id).isStopMenu()){
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.OK);
     }
 }
