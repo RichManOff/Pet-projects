@@ -11,6 +11,7 @@ public class Item {
     private String description;
     private String picture;
     private double price;
+    private boolean stopMenu;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -18,13 +19,22 @@ public class Item {
     public Item() {
     }
 
-    public Item(Long id, String name, String description, String picture, double price, Category category) {
+    public Item(Long id, String name, String description, String picture, double price,boolean stopMenu, Category category) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.picture = picture;
         this.price = price;
+        this.stopMenu = stopMenu;
         this.category = category;
+    }
+
+    public boolean isStopMenu() {
+        return stopMenu;
+    }
+
+    public void setStopMenu(boolean stopMenu) {
+        this.stopMenu = stopMenu;
     }
 
     public Long getId() {

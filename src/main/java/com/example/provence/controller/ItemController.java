@@ -1,7 +1,6 @@
 package com.example.provence.controller;
 
 import com.example.provence.model.Item;
-import com.example.provence.repository.ItemRepository;
 import com.example.provence.service.CategoryService;
 import com.example.provence.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -42,7 +40,6 @@ public class ItemController {
         if (categoryService.getCategoryById(item.getCategory().getId()) != null) {
             return ResponseEntity.ok("Item registered successfully: " + itemService.createMenuItem(item).toString());
         }
-
         return ResponseEntity.badRequest().body("Item registration failed. Category doesn't exists.");
     }
 
@@ -53,4 +50,17 @@ public class ItemController {
         return ResponseEntity.ok("Item deleted successfully.");
     }
 
+    @PostMapping("/to_stop_menu")
+    public ResponseEntity<String> toStopMenu(@RequestParam("id") Long id) {
+        log.info("toStopMenu");
+        itemService.getItemById(id).setStopMenu(true);
+        return ResponseEntity.ok("Item Stop successfully.");
+    }
+
+    @PostMapping("/delete_stop_menu")
+    public ResponseEntity<String> deleteStopMenu(@RequestParam("id") Long id) {
+        log.info("deleteStopMenu");
+        itemService.getItemById(id).setStopMenu(false);
+        return ResponseEntity.ok("Item deleted successfully.");
+    }
 }
