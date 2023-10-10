@@ -53,14 +53,18 @@ public class ItemController {
     @PostMapping("/to_stop_menu")
     public ResponseEntity<String> toStopMenu(@RequestParam("id") Long id) {
         log.info("toStopMenu");
-        itemService.getItemById(id).setStopMenu(true);
+        Item item = itemService.getItemById(id);
+        item.setStopMenu(true);
+        itemService.createMenuItem(item);
         return ResponseEntity.ok("Item Stop successfully.");
     }
 
     @PostMapping("/delete_stop_menu")
     public ResponseEntity<String> deleteStopMenu(@RequestParam("id") Long id) {
         log.info("deleteStopMenu");
-        itemService.getItemById(id).setStopMenu(false);
+        Item item = itemService.getItemById(id);
+        item.setStopMenu(false);
+        itemService.createMenuItem(item);
         return ResponseEntity.ok("Item deleted successfully.");
     }
 }
