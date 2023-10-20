@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +55,12 @@ public class OrderService {
             Item item = itemService.getItemById(order.getItems().get(i).getId());
             orderItems.add(item);
         }
+        ZoneId almatyTimeZone = ZoneId.of("Asia/Almaty");
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(almatyTimeZone);
+
+
         order.setItems(orderItems);
-        order.setOrderDate(LocalDateTime.now());
+        order.setOrderDate(zonedDateTime.toLocalDateTime());
         order.setOrderStatus(OrderStatus.PENDING);
         log.info(order.getStatus().toString());
         return orderRepository.save(order);
