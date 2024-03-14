@@ -1,20 +1,12 @@
 package com.example.provence.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@RequiredArgsConstructor
 public class Email {
     private String email;
-
-    public Email(String email) {
-        this.email = email;
-    }
-
-    public Email() {
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

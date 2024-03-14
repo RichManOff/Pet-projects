@@ -6,14 +6,12 @@ import com.example.provence.model.OrderStatus;
 import com.example.provence.model.Vacancy;
 import com.example.provence.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,7 +59,7 @@ public class OrderService {
 
         order.setItems(orderItems);
         order.setOrderDate(zonedDateTime.toLocalDateTime());
-        order.setOrderStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.PENDING);
         log.info(order.getStatus().toString());
         return orderRepository.save(order);
     }
@@ -78,8 +76,8 @@ public class OrderService {
     public String beautifyMessage(Order order){
         int sum = 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String content = "<h2>Номер заказа: " + order.getId() + "</h2>";
-        content += "<table><thead><tr><th>  №  </th><th>|  Название продукта  </th><th>|  Цена  </th><th>|  Количество продукта  </th><th>|  Сумма  </th></tr></thead><tbody>";
+        StringBuilder content = new StringBuilder("<h2>Номер заказа: " + order.getId() + "</h2>");
+        content.append("<table><thead><tr><th>  №  </th><th>|  Название продукта  </th><th>|  Цена  </th><th>|  Количество продукта  </th><th>|  Сумма  </th></tr></thead><tbody>");
         int num = 1;
         for (int i = 0; i < order.getItems().size(); i++) {
             int quantity = 0;
@@ -94,20 +92,20 @@ public class OrderService {
             double item_sum = order.getItems().get(i).getPrice() * quantity;
 
 //            content += "<br/>" + num + ") " + itemName + " (" + order.getItems().get(i).getCategory().getName() + ") * " + quantity;
-            content += """
+            content.append("""
                     <tr>
-                      <td>|  """ + num + """
-                      </td>
-                      <td>|  """ + itemName + """
-                      </td>
-                      <td>|  """ + order.getItems().get(i).getPrice() + """
-                      </td>
-                      <td>|  """ + quantity + """
-                      </td>
-                      <td>|  """ + item_sum + """
+                      <td>| \s""").append(num).append("""
+                    </td>
+                    <td>| \s""").append(itemName).append("""
+                    </td>
+                    <td>| \s""").append(order.getItems().get(i).getPrice()).append("""
+                    </td>
+                    <td>| \s""").append(quantity).append("""
+                    </td>
+                    <td>| \s""").append(item_sum).append("""
                       </td>
                     </tr>
-                    """;
+                    """);
             // Skip the next items with the same name
             for (int j = i + 1; j < order.getItems().size(); j++) {
                 if (itemName.equals(order.getItems().get(j).getName())) {
@@ -117,15 +115,12 @@ public class OrderService {
                 }
             }
             num++;
-            sum += order.getItems().get(i).getPrice() * quantity;
+            sum += (int) (order.getItems().get(i).getPrice() * quantity);
         }
         String formattedOrderDate = order.getOrderDate().format(formatter);
-        content += "</tbody></table><br/> Имя клиента: " + order.getCustomerName() +
-                "<br/> Номер клиента: " + order.getCustomerPhone() +
-                "<br/> Время заказа: " + formattedOrderDate +
-                "<br/><br/><b> Общая сумма: " + sum + "тг</b>";
-        log.info(content);
-        return content;
+        content.append("</tbody></table><br/> Имя клиента: ").append(order.getCustomerName()).append("<br/> Номер клиента: ").append(order.getCustomerPhone()).append("<br/> Время заказа: ").append(formattedOrderDate).append("<br/><br/><b> Общая сумма: ").append(sum).append("тг</b>");
+        log.info(content.toString());
+        return content.toString();
     }
     private final JavaMailSender javaMailSender;
 
