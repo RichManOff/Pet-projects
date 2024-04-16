@@ -7,11 +7,12 @@ import com.example.provence.repository.ItemRepository;
 import com.example.provence.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.util.*;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class ItemService {
         MEDIA_TYPE_MAP.put("webp", MediaType.parseMediaType("image/webp"));
     }
 
-    public ItemService(ItemRepository itemRepository, OrderRepository orderRepository) {
+    public ItemService(ItemRepository itemRepository, OrderRepository orderRepository, ResourceLoader resourceLoader) {
         this.itemRepository = itemRepository;
         this.orderRepository = orderRepository;
     }
@@ -75,18 +76,20 @@ public class ItemService {
         if (imageName.startsWith(".")) {
             imageName = imageName.substring(1);
         }
-
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("static" + imageName);
         ClassPathResource resource = new ClassPathResource("static" + imageName);
         String filename = resource.getFilename();
         MediaType mediaType = null;
-        byte[] imageBytes;
+        byte[] imageBytes = new byte[0];
 
         if (Objects.nonNull(filename)) {
             mediaType = getMediaTypeFromFileName(filename);
         }
 
         try {
-            imageBytes = Files.readAllBytes(resource.getFile().toPath());
+            if (resourceAsStream != null) {
+                imageBytes = resourceAsStream.readAllBytes();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
