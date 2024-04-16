@@ -1,5 +1,6 @@
 package com.example.provence.controller;
 
+import com.example.provence.dto.ImageDataDTO;
 import com.example.provence.model.Item;
 import com.example.provence.service.CategoryService;
 import com.example.provence.service.ItemService;
@@ -75,5 +76,14 @@ public class ItemController {
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.OK);
+    }
+
+    @GetMapping("/image")
+    public ResponseEntity<byte[]> getImage(@RequestParam String imageName) {
+        ImageDataDTO imageData = itemService.getImageData(imageName);
+        log.info("image taken");
+        return ResponseEntity.ok()
+                .contentType(imageData.getMediaType())
+                .body(imageData.getImageBytes());
     }
 }
